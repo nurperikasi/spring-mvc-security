@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta charset="UTF-8" />
+        <title > Все пользователи </title>
+    </head>
+<body>
+    <div th:each="user : ${users}">
+        <a th:href="@{/admin/{id}(id =${user.getId()})}" th:text="${user.getFirstName()}"> userName</a>
+    </div>
+    <br/>
+    <hr/>
+        <a href="/admin/new"> Создать новго пользователя </a>
+    <br/>
+    <br/>
+    <form th:method="POST" th:action="@{/logout}">
+        <button type="submit">Выход</button>
+    </form>
+</body>
+</html>
