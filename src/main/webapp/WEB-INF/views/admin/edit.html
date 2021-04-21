@@ -22,25 +22,20 @@
         <input type="text" th:field = "*{password}" id = "password" style=position:absolute;left:24%;/>
         <br/>
         <br/>
-        <label class="color-bar" > Права доступа пользователя: </label>
-        <p th:type="text"  th:each="role2 : ${user.getRoles()}"
-           th:name="exisitsRoles"
-           th:value="${role2.getRole()}"
-           th:text="${role2.getRole()}"> GGG </p>
 
         <br/>
         <br/>
         <label class="color-bar" > Выберете права доступа: </label>
             <div>
                 <label>
-                    <input th:each="role : ${listRoles}"  type="checkbox"
-                        th:name="listRolesResponse"
-                        th:value="${role.role}"
+                    <input th:each="role : ${listRoles}"  type="checkbox" name="sam"
+                        th:value="${role.getRole()}"
                         th:text="${role.role}"
+                        th:field = "*{roleNames}"
                         />
                 </label>
             </div>
-              <input type="submit" value="Сохранить изменения"/>
+        <input type="submit" value="Сохранить изменения"/>
     </form>
     <br/>
     <form th:method="POST" th:action="@{/logout}">

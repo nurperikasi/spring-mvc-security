@@ -3,6 +3,7 @@ package web.model;
 import org.springframework.security.core.GrantedAuthority;
 
 import javax.persistence.*;
+import java.util.Objects;
 import java.util.Set;
 
 // Этот класс реализует интерфейс GrantedAuthority,
@@ -27,6 +28,10 @@ public class Role implements GrantedAuthority {
         this.role = role;
     }
 
+    public Role( String role) {
+        this.role = role;
+    }
+
     public Role() {
     }
 
@@ -38,9 +43,7 @@ public class Role implements GrantedAuthority {
         this.id = id;
     }
 
-    public String getRole() {
-        return role;
-    }
+    public String getRole() { return role;}
 
     public void setRole(String role) {
         this.role = role;
@@ -50,4 +53,5 @@ public class Role implements GrantedAuthority {
     public String getAuthority() {
         return role;
     }
+
 }

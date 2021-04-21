@@ -5,6 +5,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Entity
 @Table(name = "users")
@@ -27,7 +28,7 @@ public class User implements UserDetails {
     private String email;
 
     @ManyToMany(fetch = FetchType.EAGER)
-    private Set<Role> roles = new HashSet<>();
+    private Set<Role> roles;
 
     public User() {
     }
@@ -81,6 +82,10 @@ public class User implements UserDetails {
 
     public List<Role> getListRoles(){
         return new ArrayList<>(roles);
+    }
+
+    public List<String> getRoleNames(){
+      return  roles.stream().map(role -> role.getRole()).collect(Collectors.toList());
     }
 
     public void setRoles(Set<Role> roles) {

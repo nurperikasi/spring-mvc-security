@@ -16,8 +16,8 @@ public class RoleService {
     @Autowired
     private RoleRepository roleRepository;
 
-    public Set<Role> getRoleByName(List<String> listStingRoles){
-        return   listStingRoles.stream()
+    public Set<Role> getRoleByName(List<String> listStringRoles){
+        return   listStringRoles.stream()
                 .map(s -> roleRepository.findByRole(s))
                 .collect(Collectors.toSet());
     }
