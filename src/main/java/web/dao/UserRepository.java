@@ -1,4 +1,4 @@
-package web.repository;
+package web.dao;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Component;
@@ -10,7 +10,7 @@ import java.util.List;
 
 public interface UserRepository extends JpaRepository<User, Long> {
 
-    User findByFirstName(String firstname);
+    User findByName(String firstname);
 
     User findUserById(Long id);
 }

@@ -3,8 +3,7 @@ package web.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import web.model.Role;
-import web.repository.RoleRepository;
-import web.repository.UserRepository;
+import web.dao.RoleDao;
 
 import java.util.List;
 import java.util.Set;
@@ -14,11 +13,11 @@ import java.util.stream.Collectors;
 public class RoleService {
 
     @Autowired
-    private RoleRepository roleRepository;
+    private RoleDao roleDao;
 
     public Set<Role> getRoleByName(List<String> listStringRoles){
         return   listStringRoles.stream()
-                .map(s -> roleRepository.findByRole(s))
+                .map(s -> roleDao.findByRole(s))
                 .collect(Collectors.toSet());
     }
 }

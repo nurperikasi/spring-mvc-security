@@ -1,31 +1,100 @@
 package web.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+
+
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import web.dao.RoleDao;
 import web.model.User;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.ModelAndView;
 import web.service.UserService;
 
-import javax.servlet.http.HttpServletRequest;
-import java.security.Principal;
+import java.util.List;
 
 @Controller
+@RequestMapping("/")
 public class UserController {
 
-    private UserService userService;
+    private final RoleDao roleDao;
 
-    @Autowired
-    public UserController(UserService userService) {
+    private final UserService userService;
+
+    public UserController(RoleDao roleDao, UserService userService) {
+        this.roleDao = roleDao;
         this.userService = userService;
     }
 
-    @GetMapping("/user")
-    public String showResults(final HttpServletRequest request, Principal principal, Model model) {
-        String currentUser = principal.getName();
-        User user = userService.getByFirstName(currentUser);
-        model.addAttribute("user", user);
-        return "user/getById";
+    @GetMapping("/admin")
+    public ModelAndView admin(){
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("admin");
+
+        Authentication loggedInUser = SecurityContextHolder.getContext().getAuthentication();
+        String username = loggedInUser.getName();
+        modelAndView.addObject("user", userService.getByName(username));
+
+        List<User> list = userService.allUsers();
+        modelAndView.addObject("allUsers", list);
+        return modelAndView;
     }
+
+    @GetMapping("/user")
+    public ModelAndView user() {
+        ModelAndView modelAndView = new ModelAndView();
+
+        Authentication loggedInUser = SecurityContextHolder.getContext().getAuthentication();
+        String username = loggedInUser.getName();
+        modelAndView.addObject("user", userService.getByName(username));
+
+        modelAndView.setViewName("user'sPage");
+        return modelAndView;
+    }
+
+    @GetMapping("/update/{id}")
+    public ModelAndView updatePage(@PathVariable("id") Long id){
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.addObject("user", userService.getById(id));
+        modelAndView.addObject("roleList", userService.getAllRoles());
+        modelAndView.setViewName("updatePage");
+        return modelAndView;
+    }
+
+    @PostMapping("/update")
+    public  ModelAndView updateUser(@ModelAttribute("user") User user,
+                                    @RequestParam(value = "roles", required = false)String [] roleList){
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("redirect:/admin");
+        userService.update(user, roleList);
+        return modelAndView;
+    }
+
+    @GetMapping("/addPage")
+    public ModelAndView addPage(){
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.addObject("user", new User());
+        modelAndView.addObject("roleList", userService.getAllRoles());
+        modelAndView.setViewName("addPage");
+        return modelAndView;
+    }
+
+    @PostMapping("/add")
+    public ModelAndView addUser(@ModelAttribute("user") User user,
+                                @RequestParam(value = "roles", required = false)String [] roleList){
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("redirect:/admin");
+        userService.add(user, roleList);
+        return modelAndView;
+    }
+
+    @GetMapping("/delete/{id}")
+    public ModelAndView deleteUser(@PathVariable("id") Long id){
+        ModelAndView modelAndView = new ModelAndView();
+        User user = userService.getById(id);
+        userService.delete(user);
+        modelAndView.setViewName("redirect:/admin");
+        return modelAndView;
+    }
+
 }

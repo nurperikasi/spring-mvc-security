@@ -1,4 +1,4 @@
-package web.repository;
+package web.dao;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import web.model.Role;
@@ -6,7 +6,11 @@ import web.model.Role;
 import java.util.List;
 import java.util.Set;
 
-public interface RoleRepository extends JpaRepository <Role, Long> {
+public interface RoleDao extends JpaRepository <Role, Long> {
 
     Role findByRole(String roleName);
+
+    Role getById(Long id);
+
+
 }

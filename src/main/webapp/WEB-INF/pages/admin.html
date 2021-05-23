@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin</title>
+
+</head>
+<body>
+<h1>Welcome!</h1>
+<h1 th:utext="${user.getUsername()}"> </h1>
+<table border="1">
+    <tr>
+        <th>Id</th>
+        <th>Name</th>
+        <th>Last Name</th>
+        <th>Roles</th>
+        <th>Actions</th>
+    </tr>
+    <tr th:each="user, state : ${allUsers}">
+        <td th:utext="${user.id}">Id</td>
+        <td th:utext="${user.name}">Name</td>
+        <td th:utext="${user.lastName}">Last Name</td>
+        <td th:utext="${user.roles1}">Roles</td>
+        <td>
+            <a th:href="@{/update/{id}(id=${user.id})}">Edit</a>
+            <a th:href="@{/delete/{id}(id=${user.id})}">Delete</a>
+        </td>
+    </tr>
+</table>
+
+<br> <a  href="/addPage">Add new user</a></br>
+
+<a href="#" th:href="@{/logout}">Log Out</a>
+</body>
+</html>

@@ -4,45 +4,39 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.Collection;
+import java.util.List;
 
 @Entity
 @Table(name = "users")
 public class User implements UserDetails {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @Column(name = "name")
-    private String firstName;
+    @Column(name = "user_name")
+    private String name;
 
-    @Column(name = "password")
+    @Column(name = "last_name")
+    private  String lastName;
+
+    @Column
     private String password;
 
-    @Column(name = "lastname")
-    private String lastName;
+    @Transient
+    private String confirmPassword;
 
-    @Column(name = "email", unique = true)
-    private String email;
-
-    @ManyToMany(fetch = FetchType.EAGER)
-    private Set<Role> roles;
+    @ManyToMany(fetch = FetchType.EAGER, cascade = { CascadeType.ALL })
+    @JoinTable(
+            name = "Users_Roles",
+            joinColumns = { @JoinColumn(name = "user_id") },
+            inverseJoinColumns = { @JoinColumn(name = "role_id") })
+    private List<Role> roles;
 
     public User() {
     }
 
-    public User(String password) {
-        this.password = password;
-    }
-
-    public User(String firstName, String lastName, String email, Set<Role> roles) {
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.email = email;
-        this.roles = roles;
-    }
 
     public Long getId() {
         return id;
@@ -52,12 +46,12 @@ public class User implements UserDetails {
         this.id = id;
     }
 
-    public String getFirstName() {
-        return firstName;
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
+    public String getName() {
+        return name;
     }
 
     public String getLastName() {
@@ -68,37 +62,33 @@ public class User implements UserDetails {
         this.lastName = lastName;
     }
 
-    public String getEmail() {
-        return email;
+    public  void setPassword(String password) {
+        this.password = password;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
+    public String getConfirmPassword() {
+        return confirmPassword;
     }
 
-    public Set<Role> getRoles() {
+    public void setConfirmPassword(String confirmPassword) {
+        this.confirmPassword = confirmPassword;
+    }
+
+    public List<Role> getRoles() {
         return roles;
     }
 
-    public List<Role> getListRoles(){
-        return new ArrayList<>(roles);
+    public String getRoles1() {
+        return roles.toString().replace("[", "").replace("]", "");
     }
 
-    public List<String> getRoleNames(){
-      return  roles.stream().map(role -> role.getRole()).collect(Collectors.toList());
-    }
-
-    public void setRoles(Set<Role> roles) {
+    public void setRoles(List<Role> roles) {
         this.roles = roles;
     }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return roles;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
+        return getRoles();
     }
 
     @Override
@@ -108,7 +98,7 @@ public class User implements UserDetails {
 
     @Override
     public String getUsername() {
-        return firstName;
+        return name;
     }
 
     @Override
@@ -129,5 +119,17 @@ public class User implements UserDetails {
     @Override
     public boolean isEnabled() {
         return true;
+    }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", password='" + password + '\'' +
+                ", confirmPassword='" + confirmPassword + '\'' +
+                ", roles=" + roles +
+                '}';
     }
 }
